@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  ci-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+      - run: |
+          dotnet publish . -p:PublishTrimmed=true -p:PublishSingleFile=true -p:DebugType=None --self-contained -c Release -o out -r win10-x64
+          mkdir artifacts
+          mv out/nex.exe artifacts/nex.exe
+      - uses: actions/upload-artifact@v2
+        with:
+          name: x64_windows.exe
+          path: artifacts/nex.exe
+          if-no-files-found: error
+  ci-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+      - run: |
+          dotnet publish . -p:PublishTrimmed=true -p:PublishSingleFile=true -p:DebugType=None --self-contained -c Release -o out -r linux-x64
+          mv ./out/nex artifacts/nex
+      - uses: actions/upload-artifact@v2
+        with:
+          name: x64_linux
+          path: artifacts/nex
+          if-no-files-found: error
+  upload:
+    runs-on: ubuntu-latest
+    needs: [ci-linux, ci-windows]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          path: artifacts/
+      - name: Create a Release
+        uses: elgohr/Github-Release-Action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          title: Release - Nex CDN
