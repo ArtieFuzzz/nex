@@ -6,6 +6,7 @@ namespace nex.Controllers;
 
 [ApiController]
 [Route("i")]
+[ResponseCache(Duration = 86400, NoStore = false, Location = ResponseCacheLocation.Client)]
 public class CdnController : ControllerBase
 {
   private string ASSET_LOCATION = "./assets";
@@ -41,7 +42,7 @@ public class CdnController : ControllerBase
         return BadRequest("Unallowed File Extention");
       }
 
-      using (var stream = System.IO.File.Create($"{ASSET_LOCATION}{file.FileName}"))
+      using (var stream = System.IO.File.Create($"{ASSET_LOCATION}/{file.FileName}"))
       {
         await file.CopyToAsync(stream);
       }
