@@ -18,7 +18,7 @@ public class CdnController : ControllerBase
 
     if (!filesys.Exists(pathToFile))
     {
-      return NotFound("The File Doesn't Exist");
+      return NotFound("File Doesn't Exist");
     }
 
     var file = filesys.OpenRead(pathToFile);
