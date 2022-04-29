@@ -51,7 +51,7 @@ jobs:
       - name: Rename files
         run: |
           mv artifacts/x64_linux artifacts/nex_x64_linux
-          mv artifacts/x64_windows artifacts/nex_x64_windows.exe
+          mv artifacts/x64_windows.exe artifacts/nex_x64_windows.exe
       - name: Publish
         uses: ncipollo/release-action@v1
         with:
