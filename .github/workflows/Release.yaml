@@ -52,4 +52,4 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "artifacts/nex ,artifacts/nex.exe"
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GIT_TOKEN }}
