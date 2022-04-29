@@ -17,7 +17,7 @@ public class CdnController : ControllerBase
 
     if (!filesys.Exists(pathToFile))
     {
-      return NotFound();
+      return NotFound("The File Doesn't Exist");
     }
 
     var file = filesys.OpenRead(pathToFile);
@@ -38,7 +38,7 @@ public class CdnController : ControllerBase
 
       if (!imageExts.Contains(fileExt))
       {
-        return BadRequest("Invalid File Extension");
+        return BadRequest("Unallowed File Extention");
       }
 
       using (var stream = System.IO.File.Create($"{ASSET_LOCATION}{file.FileName}"))
@@ -49,6 +49,6 @@ public class CdnController : ControllerBase
       return Ok("File Successfully Uploaded");
     }
 
-    return BadRequest("Invalid File");
+    return BadRequest("Invalid");
   }
 }
