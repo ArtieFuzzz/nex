@@ -9,6 +9,8 @@
 ## TODO
 
 - Add Authorization to POST route
+- Add DELETE route
+- PATCH route?
 
 ## License
 
