@@ -20,7 +20,7 @@ jobs:
           mv out/nex.exe artifacts/nex.exe
       - uses: actions/upload-artifact@v2
         with:
-          name: x64_windows.exe
+          name: nex_x64_windows.exe
           path: artifacts/nex.exe
           if-no-files-found: error
   ci-linux:
@@ -37,7 +37,7 @@ jobs:
           mv out/nex artifacts/nex
       - uses: actions/upload-artifact@v2
         with:
-          name: x64_linux
+          name: nex_x64_linux
           path: artifacts/nex
           if-no-files-found: error
   upload:
@@ -48,16 +48,8 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           path: artifacts/
-      - name: Rename files
-        run: |
-          mv artifacts/x64_linux artifacts/nex_x64_linux
-          mv artifacts/x64_windows.exe artifacts/nex_x64_windows.exe
-
-          mv artifacts/nex_x64_windows.exe .
-          mv artifacts/nex_x64_linux . 
-
       - name: Publish
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "./nex_x64_linux,./nex_x64_windows.exe"
+          artifacts: "nex_x64_linux,nex_x64_windows.exe"
           token: ${{ secrets.GIT_TOKEN }}
