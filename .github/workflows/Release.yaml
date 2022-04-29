@@ -34,7 +34,7 @@ jobs:
         run: |
           dotnet publish . -p:PublishTrimmed=true -p:PublishSingleFile=true -p:DebugType=None --self-contained -c Release -o out -r linux-x64
           mkdir artifacts
-          mv ./out/nex artifacts/nex
+          mv out/nex artifacts/nex
       - uses: actions/upload-artifact@v2
         with:
           name: x64_linux
