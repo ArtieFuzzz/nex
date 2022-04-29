@@ -13,7 +13,8 @@ jobs:
         uses: actions/checkout@v2
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
-      - run: |
+      - name: Build
+        run: |
           dotnet publish . -p:PublishTrimmed=true -p:PublishSingleFile=true -p:DebugType=None --self-contained -c Release -o out -r win10-x64
           mkdir artifacts
           mv out/nex.exe artifacts/nex.exe
@@ -29,8 +30,10 @@ jobs:
         uses: actions/checkout@v2
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
-      - run: |
+      - name: Build
+        run: |
           dotnet publish . -p:PublishTrimmed=true -p:PublishSingleFile=true -p:DebugType=None --self-contained -c Release -o out -r linux-x64
+          mkdir artifacts
           mv ./out/nex artifacts/nex
       - uses: actions/upload-artifact@v2
         with:
