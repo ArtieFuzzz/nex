@@ -48,6 +48,10 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           path: artifacts/
+      - name: Rename files
+        run: |
+          mv artifacts/x64_linux artifacts/nex_x64_linux
+          mv artifacts/x64_windows artifacts/nex_x64_windows.exe
       - name: Publish
         uses: ncipollo/release-action@v1
         with:
