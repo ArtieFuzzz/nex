@@ -48,8 +48,12 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           path: artifacts/
-      - name: Publish
-        uses: ncipollo/release-action@v1
+      - name: Automatic Releases
+        uses: marvinpinto/action-automatic-releases@v1.2.1
         with:
-          artifacts: "nex_x64_linux,nex_x64_windows.exe"
-          token: ${{ secrets.GIT_TOKEN }}
+          repo_token: ${{ secret.GIT_TOKEN }}
+          automatic_release_tag: latest
+          prerelease: false
+          files: |
+            nex_x64_linux
+            nex_x64_windows.exe
