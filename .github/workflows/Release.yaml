@@ -55,5 +55,5 @@ jobs:
           automatic_release_tag: latest
           prerelease: false
           files: |
-            nex_x64_linux
-            nex_x64_windows.exe
+            ./artifacts/nex_x64_linux
+            ./artifacts/nex_x64_windows.exe
