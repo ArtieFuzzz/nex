@@ -55,5 +55,5 @@ jobs:
       - name: Publish
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "artifacts/nex,artifacts/nex.exe"
+          artifacts: "artifacts/nex_x64_linux,artifacts/nex_x64_windows.exe"
           token: ${{ secrets.GIT_TOKEN }}
