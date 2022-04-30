@@ -15,6 +15,7 @@ public class CdnController : ControllerBase
 {
   private string ASSET_LOCATION = "./assets";
   private string JWT_SECRET = Environment.GetEnvironmentVariable("JWT_SECRET") ?? throw new Exception("JWT_SECRET environment variable not set");
+  int[] SIZES = { 16, 32, 64, 128, 256, 512, 1024, 2048, 4096 };
 
   [HttpGet("{name}")]
   public IActionResult GetFile(String name, int? size)
@@ -59,7 +60,7 @@ public class CdnController : ControllerBase
         await file.CopyToAsync(stream);
       }
 
-      UploadOtherSizes(file.FileName);
+      ResizeFile(file.FileName);
 
       return Ok("File Successfully Uploaded");
     }
@@ -84,17 +85,18 @@ public class CdnController : ControllerBase
     return Ok("Deleted");
   }
 
-  private async void UploadOtherSizes(String filename)
+  private async void ResizeFile(String filename)
   {
-    // Shit I dunno. But if it works, it works...
-    int[] sizes = { 16, 32, 64, 128, 256, 512, 1024, 2048, 4096 };
+    var path = $"{ASSET_LOCATION}/{filename}";
+    var name = Path.GetFileNameWithoutExtension(path);
+    var ext = new FileInfo(path).Extension;
 
-    for (int i = 0; i < sizes.Length; i++)
+    for (int i = 0; i < SIZES.Length; i++)
     {
-      using var image = Image.Load($"{ASSET_LOCATION}/{filename}");
+      using var image = Image.Load(path);
 
-      image.Mutate(x => x.Resize(new ResizeOptions { Size = new Size(sizes[i], sizes[i]) }));
-      await image.SaveAsync($"{ASSET_LOCATION}/{filename}_{sizes[i]}");
+      image.Mutate(x => x.Resize(new ResizeOptions { Size = new Size(SIZES[i], SIZES[i]) }));
+      await image.SaveAsync($"{ASSET_LOCATION}/{name}_{SIZES[i]}{ext}");
     }
 
     return;
