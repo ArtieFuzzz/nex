@@ -2,6 +2,8 @@
 
 > Simple CDN Server
 
+# This repo has moved to [`Orbit`](https://github.com/blue-toaster/orbit)
+
 ## Installation
 
 These steps assume you already have the [DotNet SDK](https://dotnet.microsoft.com/en-us/) installed
