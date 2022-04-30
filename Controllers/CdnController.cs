@@ -1,3 +1,4 @@
+#pragma warning disable CS0618
 using Microsoft.AspNetCore.Mvc;
 using filesys = System.IO.File;
 using System.Text.RegularExpressions;
@@ -80,12 +81,13 @@ public class CdnController : ControllerBase
       return NotFound("File Doesn't Exist");
     }
 
+    DeleteResizedFiles(name);
     filesys.Delete(pathToFile);
 
     return Ok("Deleted");
   }
 
-  private async void ResizeFile(String filename)
+  private async void ResizeFile(string filename)
   {
     var path = $"{ASSET_LOCATION}/{filename}";
     var name = Path.GetFileNameWithoutExtension(path);
@@ -97,6 +99,19 @@ public class CdnController : ControllerBase
 
       image.Mutate(x => x.Resize(new ResizeOptions { Size = new Size(SIZES[i], SIZES[i]) }));
       await image.SaveAsync($"{ASSET_LOCATION}/{name}_{SIZES[i]}{ext}");
+    }
+
+    return;
+  }
+
+  private void DeleteResizedFiles(string filename) {
+    var path = $"{ASSET_LOCATION}/{filename}";
+    var name = Path.GetFileNameWithoutExtension(path);
+    var ext = new FileInfo(path).Extension;
+
+    for (int i = 0; i < SIZES.Length; i++)
+    {
+      filesys.Delete($"{ASSET_LOCATION}/{name}_{SIZES[i]}{ext}");
     }
 
     return;
