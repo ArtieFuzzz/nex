@@ -35,9 +35,7 @@ public class CdnController : ControllerBase
   [HttpPost("upload")]
   public async Task<IActionResult> PostFile([FromForm] IFormFile file)
   {
-    if (Request.Headers["Authorization"].Count() == 0) return Unauthorized("No Authorization");
-    
-    if (!VerifyJWT()) return Unauthorized("Invalid Token");
+    if (VerifyJWT() is UnauthorizedObjectResult) return Unauthorized("Invalid Authentication");
 
     if (!(file.Length <= 0))
     {
@@ -65,8 +63,27 @@ public class CdnController : ControllerBase
     return BadRequest("Invalid");
   }
 
-  private bool VerifyJWT()
+  [HttpDelete("{name}")]
+  public IActionResult DeleteFile(String name)
   {
+    if (VerifyJWT() is UnauthorizedObjectResult) return Unauthorized("Invalid Authentication");
+
+    var pathToFile = $"{ASSET_LOCATION}/{name}";
+
+    if (!filesys.Exists(pathToFile))
+    {
+      return NotFound("File Doesn't Exist");
+    }
+
+    filesys.Delete(pathToFile);
+
+    return Ok("Deleted");
+  }
+
+  private IActionResult VerifyJWT()
+  {
+    if (Request.Headers["Authorization"].Count() == 0) return Unauthorized("No Authorization");
+
     try
     {
       JwtBuilder.Create()
@@ -77,9 +94,9 @@ public class CdnController : ControllerBase
     }
     catch
     {
-      return false;
+      return Unauthorized("Invalid Token");
     }
 
-    return true;
+    return Ok("Continue");
   }
 }
