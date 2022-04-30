@@ -3,6 +3,8 @@ using filesys = System.IO.File;
 using System.Text.RegularExpressions;
 using JWT.Builder;
 using JWT.Algorithms;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace nex.Controllers;
 
@@ -15,7 +17,7 @@ public class CdnController : ControllerBase
   private string JWT_SECRET = Environment.GetEnvironmentVariable("JWT_SECRET") ?? throw new Exception("JWT_SECRET environment variable not set");
 
   [HttpGet("{name}")]
-  public IActionResult GetFile(String name)
+  public IActionResult GetFile(String name, int? size)
   {
     var pathToFile = $"{ASSET_LOCATION}/{name}";
 
@@ -57,6 +59,8 @@ public class CdnController : ControllerBase
         await file.CopyToAsync(stream);
       }
 
+      UploadOtherSizes(file.FileName);
+
       return Ok("File Successfully Uploaded");
     }
 
@@ -78,6 +82,22 @@ public class CdnController : ControllerBase
     filesys.Delete(pathToFile);
 
     return Ok("Deleted");
+  }
+
+  private async void UploadOtherSizes(String filename)
+  {
+    // Shit I dunno. But if it works, it works...
+    int[] sizes = { 16, 32, 64, 128, 256, 512, 1024, 2048, 4096 };
+
+    for (int i = 0; i < sizes.Length; i++)
+    {
+      using var image = Image.Load($"{ASSET_LOCATION}/{filename}");
+
+      image.Mutate(x => x.Resize(new ResizeOptions { Size = new Size(sizes[i], sizes[i]) }));
+      await image.SaveAsync($"{ASSET_LOCATION}/{filename}_{sizes[i]}");
+    }
+
+    return;
   }
 
   private IActionResult VerifyJWT()
